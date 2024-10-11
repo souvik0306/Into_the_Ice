@@ -11,10 +11,6 @@ z_values = np.linspace(0, -length_of_cave, num_points)  # Depth (z-axis)
 # Noise parameters
 noise_amplitude = 0.05  # Magnitude of random noise
 
-# Elliptical trajectory parameters
-a = 1.5  # Semi-major axis of the ellipse
-b = 1.0  # Semi-minor axis of the ellipse
-
 # PID controller parameters
 Kp = 0.8  # Proportional gain
 Ki = 0.05  # Integral gain
@@ -38,14 +34,10 @@ right_thickness = np.zeros(num_points)  # Random right boundary of the cave
 # Robot's position marker for the thickness plot
 robot_position_x = []  # X position of the robot in the thickness plot
 
-# Collision avoidance margin
-collision_margin = 0.1  # Distance from walls to avoid collision
-
 # Function to apply the PID controller
-def apply_PID_control(t, theta, x, y, vx, vy, integral_x, integral_y, desired_radius, ellipse_x, ellipse_y):
-    # Elliptical trajectory as desired path
-    desired_x = ellipse_x
-    desired_y = ellipse_y
+def apply_PID_control(t, theta, x, y, vx, vy, integral_x, integral_y, desired_radius):
+    desired_x = desired_radius * np.cos(theta)
+    desired_y = desired_radius * np.sin(theta)
     
     # Errors
     error_x = desired_x - x
@@ -77,10 +69,6 @@ right_thickness = 1.0 * (0.5 + np.random.randn(num_points) * 0.2)  # Random righ
 # Simulate the robot's spiral movement with the variable thickness and PID control
 theta_values = np.linspace(0, theta_max, num_points)
 for i in range(1, num_points):
-    # Elliptical trajectory definition
-    ellipse_x = a * np.cos(theta_values[i]) + noise_amplitude * np.random.randn()  # Ellipse with noise
-    ellipse_y = b * np.sin(theta_values[i]) + noise_amplitude * np.random.randn()
-
     # Determine the valid radius at the current depth based on the cave boundaries
     random_radius = min(abs(left_thickness[i]), abs(right_thickness[i]))
 
@@ -89,16 +77,16 @@ for i in range(1, num_points):
     noise_y = noise_amplitude * np.random.randn()
     
     # Undamped trajectory (no control system)
-    x_undamped[i] = np.clip(x_undamped[i-1] + vx_undamped + noise_x, left_thickness[i] + collision_margin, right_thickness[i] - collision_margin)
-    y_undamped[i] = np.clip(y_undamped[i-1] + vy_undamped + noise_y, left_thickness[i] + collision_margin, right_thickness[i] - collision_margin)
+    x_undamped[i] = np.clip(x_undamped[i-1] + vx_undamped + noise_x, left_thickness[i], right_thickness[i])
+    y_undamped[i] = np.clip(y_undamped[i-1] + vy_undamped + noise_y, left_thickness[i], right_thickness[i])
     vx_undamped += noise_x
     vy_undamped += noise_y
 
     # Damped trajectory with PID control
-    x_damped[i] = np.clip(x_damped[i-1] + vx_damped + noise_x, left_thickness[i] + collision_margin, right_thickness[i] - collision_margin)
-    y_damped[i] = np.clip(y_damped[i-1] + vy_damped + noise_y, left_thickness[i] + collision_margin, right_thickness[i] - collision_margin)
+    x_damped[i] = np.clip(x_damped[i-1] + vx_damped + noise_x, left_thickness[i], right_thickness[i])
+    y_damped[i] = np.clip(y_damped[i-1] + vy_damped + noise_y, left_thickness[i], right_thickness[i])
     vx_damped, vy_damped, integral_x, integral_y = apply_PID_control(
-        i, theta_values[i], x_damped[i], y_damped[i], vx_damped, vy_damped, 0, 0, random_radius, ellipse_x, ellipse_y
+        i, theta_values[i], x_damped[i], y_damped[i], vx_damped, vy_damped, 0, 0, random_radius
     )
 
     # Track the robot's x position in the thickness plot

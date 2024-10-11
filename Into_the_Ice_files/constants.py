@@ -15,10 +15,10 @@ B = 1.0  # Semi-minor axis of the ellipse
 # PID controller parameters
 KP = 0.8  # Proportional gain
 KI = 0.05  # Integral gain
-KD = 0.4  # Derivative gain
+KD = 0.9  # Derivative gain
 
 # Collision avoidance margin
-COLLISION_MARGIN = 0.1  # Distance from walls to avoid collision
+COLLISION_MARGIN = 0.05  # Distance from walls to avoid collision
 
 # Random seed for reproducibility
 RANDOM_SEED = 42
