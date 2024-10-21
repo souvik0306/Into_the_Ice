@@ -7,7 +7,7 @@ theta_max = 10 * np.pi  # Max angle for spiraling (multiple rotations)
 z_values = np.linspace(0, -length_of_cave, num_points)  # Depth (z-axis)
 
 # Noise parameters
-noise_amplitude = 0.05  # Magnitude of random noise
+noise_amplitude = 0.07  # Magnitude of random noise
 
 # PID controller parameters
 Kp = 1.0   # Proportional gain
