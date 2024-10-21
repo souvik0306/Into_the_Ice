@@ -1,6 +1,6 @@
 import numpy as np
 
-def apply_PID_control(t, theta, x, y, vx, vy, integral_x, integral_y, desired_radius, Kp, Ki, Kd):
+def apply_PID_control(theta, x, y, vx, vy, integral_x, integral_y, desired_radius, Kp, Ki, Kd):
     desired_x = desired_radius * np.cos(theta)
     desired_y = desired_radius * np.sin(theta)
     
