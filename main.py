@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Parameters
-length_of_cave = 100  # Total length of the cave in meters
-num_points = 1000  # Number of points to simulate
+length_of_cave = 1000  # Total length of the cave in meters
+num_points = 100  # Number of points to simulate
 theta_max = 20 * np.pi  # Max angle for spiraling (multiple rotations)
 z_values = np.linspace(0, -length_of_cave, num_points)  # Depth (z-axis)
 

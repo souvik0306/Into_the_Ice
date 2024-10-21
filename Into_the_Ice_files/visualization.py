@@ -1,74 +1,72 @@
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+import numpy as np
+from constants import *
+from robot_movement import apply_PID_control
 
-def setup_plots():
-    """Set up the plot layout and axes."""
-    fig1, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 6))
-    ax1 = fig1.add_subplot(131, projection='3d')
+def run_simulation():
+    # Initialize arrays to store positions, velocities, control values
+    x_damped = np.zeros(num_points)
+    y_damped = np.zeros(num_points)
+    vx_damped = 0  # Initial velocity for damped trajectory
+    vy_damped = 0
+    integral_x = 0
+    integral_y = 0
+
+    x_undamped = np.zeros(num_points)
+    y_undamped = np.zeros(num_points)
+    vx_undamped = 0  # Initial velocity for undamped trajectory
+    vy_undamped = 0
+
+    error_percentage = []  # To store error percentage over time
+    left_thickness = np.zeros(num_points)  # Random left boundary of the cave
+    right_thickness = np.zeros(num_points)  # Random right boundary of the cave
+
+    # Robot's position marker for the thickness plot
+    robot_position_x = []  # X position of the robot in the thickness plot
+
+    # Generate random cave thickness (left and right boundaries) over time
+    left_thickness = -1.0 * (0.5 + np.random.randn(num_points) * 0.2)  # Random left boundary
+    right_thickness = 1.0 * (0.5 + np.random.randn(num_points) * 0.2)  # Random right boundary
+
+    # Simulate the robot's spiral movement with the variable thickness and PID control
+    theta_values = np.linspace(0, theta_max, num_points)
+
+    for i in range(1, num_points):
+        # Determine the valid radius at the current depth based on the cave boundaries
+        random_radius = min(abs(left_thickness[i]), abs(right_thickness[i]))
     
-    fig2, (ax4, ax5) = plt.subplots(2, 1, figsize=(10, 10))
+        # Introduce random noise into both trajectories
+        noise_x = noise_amplitude * np.random.randn()
+        noise_y = noise_amplitude * np.random.randn()
+        
+        # Undamped trajectory (no control system)
+        x_undamped[i] = np.clip(x_undamped[i-1] + vx_undamped + noise_x, left_thickness[i], right_thickness[i])
+        y_undamped[i] = np.clip(y_undamped[i-1] + vy_undamped + noise_y, left_thickness[i], right_thickness[i])
+        vx_undamped += noise_x
+        vy_undamped += noise_y
+    
+        # Damped trajectory with PID control
+        x_damped[i] = np.clip(x_damped[i-1] + vx_damped + noise_x, left_thickness[i], right_thickness[i])
+        y_damped[i] = np.clip(y_damped[i-1] + vy_damped + noise_y, left_thickness[i], right_thickness[i])
+        vx_damped, vy_damped, integral_x, integral_y = apply_PID_control(
+            i, theta_values[i], x_damped[i], y_damped[i], vx_damped, vy_damped, integral_x, integral_y, random_radius, Kp, Ki, Kd
+        )
+    
+        # Track the robot's x position in the thickness plot
+        robot_position_x.append((x_damped[i] + x_undamped[i]) / 2)  # Use an average for position marker
+    
+        # Calculate error as a percentage difference between damped and undamped
+        error = np.sqrt((x_damped[i] - x_undamped[i])**2 + (y_damped[i] - y_undamped[i])**2)
+        error_percentage.append(error / (np.sqrt(x_undamped[i]**2 + y_undamped[i]**2) + 1e-6) * 100)  # Avoid division by zero
 
-    return fig1, ax1, ax2, ax3, fig2, ax4, ax5
-
-def initialize_plot_elements(ax1, ax2, ax3, ax4, ax5):
-    """Initialize plot elements for animation."""
-    line_damped_3d, = ax1.plot([], [], [], label="Damped (PID) Trajectory", lw=2, color='blue')
-    line_undamped_3d, = ax1.plot([], [], [], label="Undamped Trajectory", lw=2, color='red')
-    line_damped_2d, = ax2.plot([], [], label="Damped (PID) Trajectory", lw=2, color='blue')
-    line_undamped_2d, = ax2.plot([], [], label="Undamped Trajectory", lw=2, color='red')
-    line_left_thickness, = ax3.plot([], [], lw=2, color='orange', label="Left Cave Boundary")
-    line_right_thickness, = ax3.plot([], [], lw=2, color='orange', label="Right Cave Boundary")
-    robot_marker, = ax3.plot([], [], 'ro', label="Robot Position")
-    line_error, = ax4.plot([], [], lw=2, color='green', label="Error Percentage")
-    line_proximity, = ax5.plot([], [], lw=2, color='blue', label="Proximity to Walls")
-
-    return (line_damped_3d, line_undamped_3d, line_damped_2d, line_undamped_2d, 
-            line_left_thickness, line_right_thickness, robot_marker, line_error, line_proximity)
-
-def set_plot_properties(ax1, ax2, ax3, ax4, ax5, z_values):
-    """Set plot limits, labels, and titles."""
-    ax1.set_xlim([-2, 2])
-    ax1.set_ylim([-2, 2])
-    ax1.set_zlim([z_values.min(), z_values.max()])
-    ax1.set_title('3D Trajectories: Damped (Blue) vs Undamped (Red)')
-    ax1.set_xlabel('X Position (m)')
-    ax1.set_ylabel('Y Position (m)')
-    ax1.set_zlabel('Z Position (Depth in meters)')
-    ax1.legend()
-
-    ax2.set_xlim([-2, 2])
-    ax2.set_ylim([-2, 2])
-    ax2.set_title('2D Trajectories: Damped (Blue) vs Undamped (Red)')
-    ax2.set_xlabel('X Position (m)')
-    ax2.set_ylabel('Y Position (m)')
-    ax2.legend()
-
-    ax3.set_xlim([-2, 2])
-    ax3.set_ylim([z_values.min(), z_values.max()])
-    ax3.set_title('Thickness of the Moulin and Robot Position')
-    ax3.set_xlabel('Thickness (m)')
-    ax3.set_ylabel('Depth (m)')
-    ax3.legend()
-
-    ax4.set_xlim([0, len(z_values)])
-    ax4.set_ylim([0, 100])  # Assume max error percentage is 100%
-    ax4.set_title('Error Percentage Over Time')
-    ax4.set_xlabel('Time Step')
-    ax4.set_ylabel('Error (%)')
-    ax4.legend()
-
-    ax5.set_xlim([0, len(z_values)])
-    ax5.set_ylim([0, 2])  # Adjust based on expected proximity values
-    ax5.set_title('Proximity to Walls Over Time')
-    ax5.set_xlabel('Time Step')
-    ax5.set_ylabel('Proximity (m)')
-    ax5.legend()
-
-def create_animation(fig, update_func, frames):
-    """Create and return the animation object."""
-    return FuncAnimation(fig, update_func, frames=frames, interval=50, blit=True)
-
-def show_plots():
-    """Display the plots."""
-    plt.tight_layout()
-    plt.show()
+    return {
+        'x_damped': x_damped,
+        'y_damped': y_damped,
+        'x_undamped': x_undamped,
+        'y_undamped': y_undamped,
+        'z_values': z_values,
+        'left_thickness': left_thickness,
+        'right_thickness': right_thickness,
+        'robot_position_x': robot_position_x,
+        'error_percentage': error_percentage,
+        'theta_values': theta_values
+    }

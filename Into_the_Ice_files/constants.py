@@ -1,24 +1,18 @@
 import numpy as np
 
-# Cave parameters
-LENGTH_OF_CAVE = 100  # Total length of the cave in meters
-NUM_POINTS = 1000  # Number of points to simulate
-THETA_MAX = 20 * np.pi  # Max angle for spiraling (multiple rotations)
+# Parameters
+length_of_cave = 1000  # Total length of the cave in meters
+num_points = 100  # Number of points to simulate
+theta_max = 20 * np.pi  # Max angle for spiraling (multiple rotations)
+z_values = np.linspace(0, -length_of_cave, num_points)  # Depth (z-axis)
 
 # Noise parameters
-NOISE_AMPLITUDE = 0.02  # Magnitude of random noise
-
-# Elliptical trajectory parameters
-A = 1.5  # Semi-major axis of the ellipse
-B = 1.0  # Semi-minor axis of the ellipse
+noise_amplitude = 0.05  # Magnitude of random noise
 
 # PID controller parameters
-KP = 0.8  # Proportional gain
-KI = 0.05  # Integral gain
-KD = 0.9  # Derivative gain
+Kp = 0.8  # Proportional gain
+Ki = 0.05  # Integral gain
+Kd = 0.4  # Derivative gain
 
-# Collision avoidance margin
-COLLISION_MARGIN = 0.05  # Distance from walls to avoid collision
-
-# Random seed for reproducibility
-RANDOM_SEED = 42
+# Set the random seed for reproducibility
+np.random.seed(42)
