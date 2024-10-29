@@ -1,6 +1,4 @@
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from mpl_toolkits.mplot3d import Axes3D
 from constants import *
 import numpy as np
 
