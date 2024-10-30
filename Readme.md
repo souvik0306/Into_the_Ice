@@ -1,5 +1,7 @@
 # Into the Ice: Robot Cave Navigation Simulation
 
+![Figure 1](./media/Figure_1.png)
+
 This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. 
 
 ## Installation Guide
