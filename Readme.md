@@ -1,6 +1,6 @@
 # Into the Ice: Robot Cave Navigation Simulation
 
-This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. Here's a breakdown of the components:
+This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. 
 
 ## Installation Guide
 
@@ -21,6 +21,7 @@ To get started with the simulation, follow these steps:
     ```sh
     python app.py
     ```
+## Here's a breakdown of the components:
 
 ## 1. Constants (`constants.py`)
 Defines simulation parameters:
