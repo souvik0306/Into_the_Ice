@@ -28,9 +28,15 @@ To get started with the simulation, follow these steps:
     ```sh
     python app.py
     ```
+
+4. **Run the Open3D visualization:**
+    ```sh
+    python app_open3d.py
+    ```
+
 ## Here's a breakdown of the components:
 
-## 1. Constants (`constants.py`)
+### 1. Constants (`constants.py`)
 Defines simulation parameters:
 - Cave length
 - Depth points
@@ -38,7 +44,7 @@ Defines simulation parameters:
 - Noise amplitude
 - PID gain values
 
-## 2. PID Controller (`pid_controller.py`)
+### 2. PID Controller (`pid_controller.py`)
 Calculates the necessary velocity adjustments based on:
 - Current position error
 - Integral of past errors
@@ -46,7 +52,7 @@ Calculates the necessary velocity adjustments based on:
 
 Uses the classic PID formula to output control signals for both x and y directions.
 
-## 3. Simulation (`simulation.py`)
+### 3. Simulation (`simulation.py`)
 Simulates the robot's movement:
 - Generates random cave boundaries (`left_thickness`, `right_thickness`) to represent the varying width of the cave.
 - Calculates the desired path as a spiral.
@@ -56,18 +62,18 @@ Simulates the robot's movement:
 
 Tracks the robot's position, calculates the error between the damped and desired trajectories, and stores this data.
 
-## 4. Plotting (`plotting.py`)
+### 4. Plotting (`plotting.py`)
 Initializes the Matplotlib figures and axes for:
 - Cave thickness visualization
 - Error percentage plot
 
-### `update_main_plot`
+#### `update_main_plot`
 Updates the data for the 3D and thickness plots during the animation.
 
-### `update_error_plot`
+#### `update_error_plot`
 Updates the error percentage plot during the animation.
 
-## 5. Main Application (`app.py`)
+### 5. Main Application (`app.py`)
 - Calls `run_simulation` to get the simulated data.
 - Uses `setup_plots` to initialize the plots.
 - Creates two `FuncAnimation` instances:
@@ -75,5 +81,11 @@ Updates the error percentage plot during the animation.
     - One for the error plot.
 - Shows the plots with the animations running.
 
+### 6. Open3D Visualization (`app_open3d.py`)
+- Creates and deforms a cylindrical mesh to represent the cave.
+- Applies Perlin noise to the mesh vertices to simulate natural cave walls.
+- Simulates the robot's path inside the cave.
+- Visualizes the cave and robot path using Open3D.
+
 ## Summary
-The codebase simulates a robot navigating a cave with varying thickness. It uses a PID controller to keep the robot on a desired spiral path while avoiding collisions with the cave walls. The simulation results are visualized using Matplotlib animations, showing the 3D trajectory, the cave thickness, and the error difference between damped and random movement.
+The codebase simulates a robot navigating a cave with varying thickness. It uses a PID controller to keep the robot on a desired spiral path while avoiding collisions with the cave walls. The simulation results are visualized using Matplotlib animations, showing the 3D trajectory, the cave thickness, and the error difference between damped and random movement. Additionally, `app_open3d.py` provides a 3D visualization of the cave and robot path using Open3D.
