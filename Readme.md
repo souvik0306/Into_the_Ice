@@ -10,7 +10,7 @@ To get started with the simulation, follow these steps:
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/Into_the_Ice.git
+    git clone https://github.com/souvik0306/Into_the_Ice.git
     cd Into_the_Ice
     ```
 
