@@ -2,6 +2,8 @@
 
 ![Figure 1](./media/Figure_1.png)
 
+<video src="./media/cave_lidar.mov" controls></video>
+
 This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. 
 
 ## Installation Guide
