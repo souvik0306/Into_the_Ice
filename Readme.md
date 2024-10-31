@@ -1,8 +1,11 @@
 # Into the Ice: Robot Cave Navigation Simulation
 
+This simulation is based on the paper: Polzin, M., & Hughes, J. (2024). *Into the ice: Exploration and data capturing in glacial moulins by a tethered robot*. Journal of Field Robotics, 41(3), 654-668. 
+[[See the full paper]](https://www.authorea.com/users/591473/articles/627409-into-the-ice-exploration-and-data-capturing-in-glacial-moulins-by-a-tethered-robot)
+
 ![Figure 1](./media/Figure_1.png)
 
-<video src="./media/cave_lidar.mov" controls></video>
+https://github.com/user-attachments/assets/64ca8fcd-dacd-4eae-be79-2b943fdf6a0d
 
 This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. 
 
