@@ -5,7 +5,7 @@ from noise import pnoise2
 # Constants for cave generation
 LENGTH_OF_CAVE = 100.0  # Total length of the cave in meters
 RADIUS = 10.0            # Average radius of the cave
-SCALE = 4.0             # Scale for Perlin noise
+SCALE = 14.0             # Scale for Perlin noise
 FREQ = 1.0              # Frequency for Perlin noise
 NUM_POINTS = 1000       # Number of points for robot trajectory
 
