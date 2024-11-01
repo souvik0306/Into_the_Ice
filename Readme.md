@@ -5,7 +5,8 @@ This simulation is based on the paper: Polzin, M., & Hughes, J. (2024). *Into th
 
 ![Figure 1](./media/Figure_1.png)
 
-https://github.com/user-attachments/assets/64ca8fcd-dacd-4eae-be79-2b943fdf6a0d
+https://github.com/user-attachments/assets/c1ada065-4da9-4a4e-9bf0-7127f4ea14e8
+
 
 This project simulates the movement of a robot descending into a cave of varying thickness using a PID controller to stay within the boundaries. 
 
